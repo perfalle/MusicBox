@@ -1,0 +1,23 @@
+[Unit]
+Description=Fluidsynth playing a soundfont with MIDI
+After=jackd.service
+Requires=jackd.service
+PartOf=jackd.service
+
+[Service]
+Type=simple
+User=pi
+LimitRTPRIO=infinity
+LimitMEMLOCK=infinity
+Environment=USER=pi
+Environment=HOME=/home/pi/
+ExecStart=/usr/bin/fluidsynth -a jack -m jack '/home/pi/GeneralUser GS v1.471.sf2'
+ExecStartPost=/bin/sleep 2
+Restart=always
+StandardOutput=journal
+StandardInput=tty-force
+TTYPath=/dev/tty20
+
+[Install]
+WantedBy=default.target
+WantedBy=jackd.service

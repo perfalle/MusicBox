@@ -1,0 +1,20 @@
+[Unit]
+Description=Connecting fluidsynth to MIDI input and audio card
+After=jackd.service
+After=a2jmidid.service
+After=fluidsynth.service
+Requires=jackd.service
+Requires=a2jmidid.service
+Requires=fluidsynth.service
+PartOf=jackd.service
+PartOf=a2jmidid.service
+PartOf=fluidsynth.service
+
+[Service]
+Type=oneshot
+User=pi
+LimitRTPRIO=infinity
+LimitMEMLOCK=infinity
+Environment=USER=pi
+Environment=HOME=/home/pi/
+ExecStart=/bin/sh -c "/usr/bin/jack_connect \"$(jack_lsp|grep '..(capture)..*..MIDI')\" fluidsynth:midi ; /usr/bin/jack_connect fluidsynth:l_00 system:playback_1 ; /usr/bin/jack_connect fluidsynth:r_00 system:playback_2 ; true"

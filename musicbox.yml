@@ -1,0 +1,87 @@
+---
+- hosts: all
+  tasks:
+    - name: Install jackd
+      become: yes
+      package:
+        name: jackd
+        state: present
+
+    - name: Install fluidsynth to play soundfonts
+      become: yes
+      package:
+        name: fluidsynth
+        state: present
+
+    - name: Install a2jmidid to bridge midi devices to jack
+      become: yes
+      package:
+        name: a2jmidid
+        state: present
+
+    - name: Change default sound card (2)
+      become: yes
+      lineinfile:
+        path: /usr/share/alsa/alsa.conf
+        regexp: "^defaults.ctl.card="
+        line: "defaults.ctl.card=1"
+
+    - name: Change default sound card (2)
+      become: yes
+      lineinfile:
+        path: /usr/share/alsa/alsa.conf
+        regexp: "^defaults.pcm.card"
+        line: "defaults.pcm.card 1"
+
+    - name: Copy dbus configuration
+      become: yes
+      copy:
+        src: "system-local.conf"
+        dest: "/etc/dbus-1/system-local.conf"
+        owner: root
+
+    - name: restart dbus
+      become: yes
+      systemd: state=restarted name=dbus
+
+    - name: Copy jackd unit file
+      become: yes
+      copy:
+        src: "jackd.service"
+        dest: "/etc/systemd/system/jackd.service"
+
+    - name: Copy a2jmidid unit file
+      become: yes
+      copy:
+        src: "a2jmidid.service"
+        dest: "/etc/systemd/system/a2jmidid.service"
+
+    - name: Copy fluidsynth unit file
+      become: yes
+      copy:
+        src: "fluidsynth.service"
+        dest: "/etc/systemd/system/fluidsynth.service"
+
+    - name: Copy jack-connections unit file
+      become: yes
+      copy:
+        src: "jack-connections.service"
+        dest: "/etc/systemd/system/jack-connections.service"
+
+    - name: systemd daemon-reload
+      become: yes
+      systemd: daemon_reload=yes
+
+    - name: enable jackd
+      become: yes
+      systemd: enabled=yes name=jackd daemon_reload=yes
+    - name: enable a2jmidid
+      become: yes
+      systemd: enabled=yes name=jackd daemon_reload=yes
+    - name: enable fluidsynth
+      become: yes
+      systemd: enabled=yes name=fluidsynth daemon_reload=yes
+
+    - name: start all
+      become: yes
+      systemd: state=started name=jackd daemon_reload=yes

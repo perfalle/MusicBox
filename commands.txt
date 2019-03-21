@@ -1,0 +1,41 @@
+# Play MIDI input with Soundfont on alsa
+fluidsynth -a alsa -m alsa_seq /path/to/soundfont.sf2
+
+# Play MIDI input with Soundfont on JACK, --dump live-prints midi events to check if that works
+fluidsynth -a jack -m jack /path/to/soundfont.sf2
+
+# List all ALSA ports
+aconnect -o
+
+# Connect two ALSA ports / clients
+aconnect 3 4
+
+#  List all USB devicess
+lsusb
+
+# List sound cards
+aplay -l
+
+# Select sound card as default
+# Config file: /usr/share/alsa/alsa-base.conf  (maybe in old version: /etc/modprobe.d/alsa-base.conf)
+defaults.ctl.card 0
+defaults.pcm.card 0
+
+# List all jack ports
+jack_lsp
+
+# Run bridge for MIDI devices to jack
+a2jmidid -e
+
+# Connect jack ports, X,Y are the *full* names listed by jack_lsp
+jack_connect X Y
+
+# Run jackd on an alsa device, choose hardware "CODEC" (name as in output of aplay -l, name of card), with buffer-size of 128 and 44.1kHz.
+# '-s' runs alsa inn soft mode, without it crashed when fs is restarted
+jackd -dalsa -dhw:CODEC -p128 -r44100 -s
+
+# Env Var when jack is started without X
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
+
+
+## systemd puts any service into sn extra cgroup w\ permission for realtime (and maybe with other consequences)!

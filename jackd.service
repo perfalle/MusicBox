@@ -1,0 +1,18 @@
+[Unit]
+Description=JACK
+After=sound.target
+Requires=sound.target
+
+[Service]
+User=pi
+LimitRTPRIO=infinity
+LimitMEMLOCK=infinity
+Environment=USER=pi
+Environment=HOME=/home/pi/
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
+ExecStart=/usr/bin/jackd -dalsa -dhw:CODEC -p256 -r44100 -n3 -s
+ExecStartPost=/bin/sleep 2
+Restart=always
+
+[Install]
+WantedBy=default.target

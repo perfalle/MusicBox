@@ -1,0 +1,20 @@
+[Unit]
+Description=Bridging MIDI devices to JACK
+After=jackd.service
+Requires=jackd.service
+PartOf=jackd.service
+
+[Service]
+User=pi
+LimitRTPRIO=infinity
+LimitMEMLOCK=infinity
+Environment=USER=pi
+Environment=HOME=/home/pi/
+ExecStart=/usr/bin/a2jmidid -e
+ExecStartPost=/bin/sleep 2
+Restart=always
+
+[Install]
+WantedBy=default.target
+WantedBy=jackd.service
+
