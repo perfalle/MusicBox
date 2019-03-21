@@ -11,10 +11,9 @@ LimitMEMLOCK=infinity
 Environment=USER=pi
 Environment=HOME=/home/pi/
 ExecStart=/usr/bin/a2jmidid -e
-ExecStartPost=/bin/sleep 2
+ExecStartPost=/bin/sleep 15
 Restart=always
 
 [Install]
-WantedBy=default.target
 WantedBy=jackd.service
 

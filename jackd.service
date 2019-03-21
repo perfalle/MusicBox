@@ -10,8 +10,8 @@ LimitMEMLOCK=infinity
 Environment=USER=pi
 Environment=HOME=/home/pi/
 Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
-ExecStart=/usr/bin/jackd -dalsa -dhw:CODEC -p256 -r44100 -n3 -s
-ExecStartPost=/bin/sleep 2
+ExecStart=/usr/bin/jackd -P95 -dalsa -dhw:CODEC -p128 -r32000 -n3 -s
+ExecStartPost=/bin/sleep 4
 Restart=always
 
 [Install]
